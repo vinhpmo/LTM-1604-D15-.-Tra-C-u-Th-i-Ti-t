@@ -48,6 +48,7 @@ Server gọi API OpenWeatherMap để lấy thông tin.
 
 Hiển thị kết quả cho Client.
 Ứng dụng vừa mang tính học tập, vừa có tính thực tiễn (tra cứu dữ liệu thời tiết thật).
+
 👉 **Điểm nổi bật**:
 - Người dùng có thể nhập tên thành phố và nhận thông tin thời tiết ngay lập tức
 - Hỗ trợ nhiều thành phố trên toàn thế giới, dữ liệu cập nhật theo thời gian thực
@@ -174,6 +175,7 @@ DuaBaoThoiTiet/
 
 
 ---
+
 
 
 
