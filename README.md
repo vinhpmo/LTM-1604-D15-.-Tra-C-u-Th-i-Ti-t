@@ -33,6 +33,7 @@ Trong thời đại công nghệ thông tin phát triển mạnh mẽ, nhu cầu
 🌍 Kết nối và xử lý dữ liệu từ API OpenWeatherMap.
 
 📱 Giúp người dùng nhập tên thành phố và nhanh chóng nhận được thông tin thời tiết.
+
 📌 Giới thiệu dự án
 
 Tên đề tài: Ứng dụng Tra cứu Thời tiết Online
@@ -173,6 +174,7 @@ DuaBaoThoiTiet/
 
 
 ---
+
 
 
 
