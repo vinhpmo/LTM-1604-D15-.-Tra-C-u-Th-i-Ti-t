@@ -23,19 +23,34 @@
 
 ## 1. Giới thiệu hệ thống
 
-Hệ thống **Ứng dụng tra cứu thời tiết trực tuyến** được xây dựng theo mô hình **Client-Server** sử dụng Java nhằm:
+H🌦 Ứng dụng Tra cứu Thời tiết Online (Java RMI)
+📖 Giới thiệu đề tài
 
-- Hỗ trợ người dùng tra cứu thông tin thời tiết (nhiệt độ, độ ẩm, tốc độ gió, mô tả thời tiết) theo thành phố
-- Cung cấp dữ liệu thời tiết theo thời gian thực từ API công khai (WeatherAPI.com)
-- Giao diện đồ họa thân thiện với người dùng sử dụng Java Swing
-- Hỗ trợ kết nối đồng thời nhiều client thông qua Thread Pool
+Trong thời đại công nghệ thông tin phát triển mạnh mẽ, nhu cầu nắm bắt thông tin thời tiết nhanh chóng và chính xác là rất cần thiết. Đề tài “Ứng dụng tra cứu thời tiết online sử dụng Java RMI” được xây dựng nhằm:
 
+🏫 Minh họa mô hình Client – Server trong môn Lập trình mạng.
+
+🌍 Kết nối và xử lý dữ liệu từ API OpenWeatherMap.
+
+📱 Giúp người dùng nhập tên thành phố và nhanh chóng nhận được thông tin thời tiết.
+📌 Giới thiệu dự án
+
+Tên đề tài: Ứng dụng Tra cứu Thời tiết Online
+
+Ngôn ngữ: Java
+
+Chức năng chính:
+
+Người dùng nhập tên thành phố.
+
+Server gọi API OpenWeatherMap để lấy thông tin.
+
+Hiển thị kết quả cho Client.
+Ứng dụng vừa mang tính học tập, vừa có tính thực tiễn (tra cứu dữ liệu thời tiết thật).
 👉 **Điểm nổi bật**:
 - Người dùng có thể nhập tên thành phố và nhận thông tin thời tiết ngay lập tức
 - Hỗ trợ nhiều thành phố trên toàn thế giới, dữ liệu cập nhật theo thời gian thực
 - Giao diện client hiện đại với các thông báo trạng thái rõ ràng
-- Log hoạt động chi tiết giúp theo dõi quá trình giao tiếp
-
 ## 🔧 2. Công nghệ & Ngôn ngữ sử dụng
 
 [![Java](https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white)](https://www.java.com/)
@@ -71,39 +86,82 @@ Hệ thống **Ứng dụng tra cứu thời tiết trực tuyến** được x�
 
 ### Cài đặt và chạy:
 
-1. **Cấu hình API Key** (tùy chọn):
+. **Cấu hình API Key** (tùy chọn):
    - Đăng ký tài khoản tại [WeatherAPI.com](https://www.weatherapi.com/)
    - Thay thế API key trong `Server.java`:
-   ```java
-   private static final String API_KEY = "YOUR_API_KEY_HERE";
-   ```
 
-2. **Biên dịch dự án**:
-   ```bash
-   javac -d bin src/WeatherApp/*.java
-   ```
+🔄 Luồng chạy của chương trình
 
-3. **Chạy ứng dụng**:
-   ```bash
-   # Chạy Server trước
-   java -cp bin WeatherApp.Server
-   
-   # Sau đó chạy Client
-   java -cp bin WeatherApp.Client
-   ```
+Khi chạy chương trình WeatherAppUI trong Eclipse:
 
-4. **Sử dụng**:
-   - Nhấn "Kết nối" → Nhập tên thành phố → "Tra cứu thời tiết"
+Người dùng nhập thành phố
 
+Người dùng gõ tên thành phố vào ô nhập liệu.
+
+Nhấn nút 🔍 Tìm kiếm.
+
+WeatherAppUI gọi đến Service
+
+Lớp WeatherAppUI sẽ gọi phương thức getWeather(city) của WeatherService.
+
+Trong dự án, WeatherService là interface, và lớp WeatherServiceImpl là hiện thực.
+
+WeatherServiceImpl liên lạc qua RMI
+
+WeatherServiceImpl không trực tiếp trả về dữ liệu, mà sẽ gọi phương thức từ xa (RMI) đến Server để lấy thông tin thời tiết.
+
+Server sẽ kết nối với API thời tiết (ví dụ OpenWeatherMap) để truy vấn dữ liệu theo thành phố.
+
+Server xử lý & trả kết quả về Client
+
+Server nhận yêu cầu từ Client (qua RMI).
+
+Server gọi API, nhận JSON kết quả, rồi xử lý để lấy:
+
+Tên thành phố & quốc gia 🌍
+
+Ngày/Giờ 📅
+
+Nhiệt độ 🌡️
+
+Mô tả thời tiết ☁️
+
+Trạng thái ngày/đêm 🌞🌙
+
+Sau đó Server trả về Client (UI).
+
+UI cập nhật giao diện
+
+WeatherAppUI nhận dữ liệu trả về.
+
+Cập nhật các thẻ thông tin (Label).
+
+Hiển thị icon phù hợp (mưa, nắng, mây, đêm, tuyết...).
 ### Cấu trúc dự án:
 ```
-WeatherApp/
-├── src/WeatherApp/
-│   ├── Client.java           # GUI Client application
-│   ├── Server.java           # Multi-threaded server (chứa mock data)
-│   ├── WeatherProtocol.java  # Protocol definitions
-│   └── module-info.java      # Java module configuration
-└── docs/                     # Documentation and images
+DuaBaoThoiTiet/
+│
+├── src/
+│   └── weather/
+│       ├── WeatherAppUI.java        // Giao diện Swing (Client)
+│       ├── WeatherService.java      // Interface định nghĩa RMI
+│       ├── WeatherServiceImpl.java  // Hiện thực service (Server side)
+│       ├── WeatherServer.java       // Chạy RMI server, bind service
+│       └── WeatherClient.java       // Chạy client, kết nối tới server
+│
+├── icons/                           // Thư mục chứa icon hiển thị
+│   ├── sunny.png
+│   ├── rain.png
+│   ├── cloud.png
+│   ├── storm.png
+│   ├── night.png
+│   ├── snow.png
+│   └── default.png
+│
+├── lib/                             // (nếu có) các thư viện ngoài
+│
+└── README.md                        // Tài liệu hướng dẫn cài đặt & chạy
+
 ```
 
 ## ✉️ 5. Liên hệ
@@ -115,6 +173,7 @@ WeatherApp/
 
 
 ---
+
 
 
 
