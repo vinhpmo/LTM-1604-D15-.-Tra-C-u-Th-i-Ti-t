@@ -54,10 +54,13 @@ Hệ thống **Ứng dụng tra cứu thời tiết trực tuyến** được x�
 ## 🚀 3. Một số hình ảnh
 
 ### Giao diện chính của Client
-![Client Interface](docs/Screenshot%202025-09-18%20074042.png)
+![Client Interface](docs/trangchu.png)
 
 ### Kết quả tra cứu thời tiết
-![Weather Result](docs/Screenshot%202025-09-18%20074227.png)
+** Tra cứu thành công
+![Weather Result](docs/thanhcong.png)
+
+![Weather Result](docs/loikhongtimdc.png)
 
 ## 📝 4. Các bước cài đặt
 
@@ -112,5 +115,6 @@ WeatherApp/
 
 
 ---
+
 
 
