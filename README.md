@@ -23,10 +23,10 @@
 
 ## 1. Giới thiệu hệ thống
 
-H🌦 Ứng dụng Tra cứu Thời tiết Online (Java RMI)
+🌦 Ứng dụng Tra cứu Thời tiết Online
 📖 Giới thiệu đề tài
 
-Trong thời đại công nghệ thông tin phát triển mạnh mẽ, nhu cầu nắm bắt thông tin thời tiết nhanh chóng và chính xác là rất cần thiết. Đề tài “Ứng dụng tra cứu thời tiết online sử dụng Java RMI” được xây dựng nhằm:
+Trong thời đại công nghệ thông tin phát triển mạnh mẽ, nhu cầu nắm bắt thông tin thời tiết nhanh chóng và chính xác là rất cần thiết. Đề tài “Ứng dụng tra cứu thời tiết online” được xây dựng nhằm:
 
 🏫 Minh họa mô hình Client – Server trong môn Lập trình mạng.
 
@@ -173,6 +173,7 @@ DuaBaoThoiTiet/
 
 
 ---
+
 
 
 
