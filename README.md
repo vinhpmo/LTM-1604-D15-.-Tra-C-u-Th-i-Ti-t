@@ -105,11 +105,12 @@ WeatherApp/
 
 ## ✉️ 5. Liên hệ
 
-**Tác giả**: Nguyễn Đào Nguyên Giáp 
+**Tác giả**: Nguyễn Thế Vinh
 
-📧 **Email**: nguyennguyenvh09@gmail.com  
+📧 **Email**: vinhvh010204@gmail.com
 🏫 **Trường**: Đại học Đại Nam - Khoa Công nghệ Thông tin  
 
 
 ---
+
 
