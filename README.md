@@ -74,8 +74,12 @@ Hiển thị kết quả cho Client.
 ![Client Interface](docs/trangchu.png)
 
 ### Kết quả tra cứu thời tiết
+
 ** Tra cứu thành công
+
 ![Weather Result](docs/thanhcong.png)
+
+** Lỗi không tra cứu được
 
 ![Weather Result](docs/loikhongtimdc.png)
 
@@ -175,6 +179,7 @@ DuaBaoThoiTiet/
 
 
 ---
+
 
 
 
