@@ -100,49 +100,50 @@ Hiển thị kết quả cho Client.
 
 Khi chạy chương trình WeatherAppUI trong Eclipse:
 
-Người dùng nhập thành phố
+**1 Người dùng nhập thành phố
 
-Người dùng gõ tên thành phố vào ô nhập liệu.
+- Người dùng gõ tên thành phố vào ô nhập liệu.
 
-Nhấn nút 🔍 Tìm kiếm.
+- Nhấn nút 🔍 Tìm kiếm.
 
-WeatherAppUI gọi đến Service
+**2 WeatherAppUI gọi đến Service
 
-Lớp WeatherAppUI sẽ gọi phương thức getWeather(city) của WeatherService.
+- Lớp WeatherAppUI sẽ gọi phương thức getWeather(city) của WeatherService.
 
-Trong dự án, WeatherService là interface, và lớp WeatherServiceImpl là hiện thực.
+- Trong dự án, WeatherService là interface, và lớp WeatherServiceImpl là hiện thực.
 
-WeatherServiceImpl liên lạc qua RMI
+**3 WeatherServiceImpl liên lạc qua RMI
 
-WeatherServiceImpl không trực tiếp trả về dữ liệu, mà sẽ gọi phương thức từ xa (RMI) đến Server để lấy thông tin thời tiết.
+- WeatherServiceImpl không trực tiếp trả về dữ liệu, mà sẽ gọi phương thức từ xa (RMI) đến Server để lấy thông tin thời tiết.
 
-Server sẽ kết nối với API thời tiết (ví dụ OpenWeatherMap) để truy vấn dữ liệu theo thành phố.
+- Server sẽ kết nối với API thời tiết (ví dụ OpenWeatherMap) để truy vấn dữ liệu theo thành phố.
 
-Server xử lý & trả kết quả về Client
+**4 Server xử lý & trả kết quả về Client
 
-Server nhận yêu cầu từ Client (qua RMI).
+- Server nhận yêu cầu từ Client (qua RMI).
 
-Server gọi API, nhận JSON kết quả, rồi xử lý để lấy:
+- Server gọi API, nhận JSON kết quả, rồi xử lý để lấy:
 
-Tên thành phố & quốc gia 🌍
+- Tên thành phố & quốc gia 🌍
 
-Ngày/Giờ 📅
+* Ngày/Giờ 📅
 
-Nhiệt độ 🌡️
+* Nhiệt độ 🌡️
 
-Mô tả thời tiết ☁️
+* Mô tả thời tiết ☁️
 
-Trạng thái ngày/đêm 🌞🌙
+* Trạng thái ngày/đêm 🌞🌙
 
-Sau đó Server trả về Client (UI).
+**5 Sau đó Server trả về Client (UI).
 
-UI cập nhật giao diện
+- UI cập nhật giao diện
 
-WeatherAppUI nhận dữ liệu trả về.
+- WeatherAppUI nhận dữ liệu trả về.
 
-Cập nhật các thẻ thông tin (Label).
+- Cập nhật các thẻ thông tin (Label).
 
-Hiển thị icon phù hợp (mưa, nắng, mây, đêm, tuyết...).
+- Hiển thị icon phù hợp (mưa, nắng, mây, đêm, tuyết...).
+
 ### Cấu trúc dự án:
 ```
 DuaBaoThoiTiet/
@@ -179,6 +180,7 @@ DuaBaoThoiTiet/
 
 
 ---
+
 
 
 
