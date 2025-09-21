@@ -92,8 +92,9 @@ Hiển thị kết quả cho Client.
 Hệ điều hành: Windows 10/11, macOS, Linux
 
 Java Development Kit (JDK): Phiên bản 8 trở lên
-
-Bược 1: Cải đặt chi tiết 
+```
+Bược 1: Cải đặt chi tiết
+ ```bash
 Cấu hình Eclipse
 
 Import project Java vào IDE.
@@ -105,9 +106,9 @@ Thêm các thư viện cần thiết:
 gson-x.x.x.jar hoặc json-x.x.x.jar (nếu dùng thư viện parse JSON).
 
 Thêm vào: Project → Properties → Java Build Path → Add External JARs.
-
+```
 Bước 2: Cấu hình API Key
-
+ ```bash
 Mở file WeatherServiceImpl.java.
 
 Thay dòng:
@@ -116,11 +117,11 @@ private static final String API_KEY = "YOUR_API_KEY";
 
 
 bằng API key thật lấy từ [OpenWeather](https://www.weatherapi.com/login.aspx)
-.
+```
 Bước 3: Chuẩn bị RMI Registry
 
 Bạn có 2 cách để khởi động RMI Registry:
-
+ ```bash
 1. Khởi động ngoài terminal/cmd
 
 Vào thư mục bin (chứa file .class) của project.
@@ -131,18 +132,18 @@ rmiregistry 1099
 
 
 (Windows có thể cần: "C:\Program Files\Java\jdk-17\bin\rmiregistry.exe" 1099)
-
+ ```
+ ```bash
 2. Tích hợp trong code
 
 Trong WeatherServer.java, thêm:
 
 LocateRegistry.createRegistry(1099);
 
-
 Khi đó chỉ cần chạy WeatherServer, không cần mở rmiregistry bằng tay.
-
+ ```
 Bước 4: Chạy ứng dụng
-
+ ```bash
 1. Khởi động Server
 
 Mở file WeatherServer.java.
@@ -152,8 +153,8 @@ Run → Java Application.
 Console in ra:
 
 ✅ WeatherServer is running on port 1099
-
-
+ ```
+```bash
 2. Khởi động Client (Giao diện Swing)
 
 Mở file WeatherAppUI.java.
@@ -181,33 +182,7 @@ Giao diện xuất hiện → nhập thành phố → bấm “Tìm kiếm” �
 - Cập nhật các thẻ thông tin (Label).
 
 - Hiển thị icon phù hợp (mưa, nắng, mây, đêm, tuyết...).
-
-### Cấu trúc dự án:
-```
-DuaBaoThoiTiet/
-│
-├── src/
-│   └── weather/
-│       ├── WeatherAppUI.java        // Giao diện Swing (Client)
-│       ├── WeatherService.java      // Interface định nghĩa RMI
-│       ├── WeatherServiceImpl.java  // Hiện thực service (Server side)
-│       ├── WeatherServer.java       // Chạy RMI server, bind service
-│       └── WeatherClient.java       // Chạy client, kết nối tới server
-│
-├── icons/                           // Thư mục chứa icon hiển thị
-│   ├── sunny.png
-│   ├── rain.png
-│   ├── cloud.png
-│   ├── storm.png
-│   ├── night.png
-│   ├── snow.png
-│   └── default.png
-│
-├── lib/                             // (nếu có) các thư viện ngoài
-│
-└── README.md                        // Tài liệu hướng dẫn cài đặt & chạy
-
-```
+ ```
 
 📞 5. Liên hệ
 
@@ -220,6 +195,7 @@ Nếu có thắc mắc hoặc cần hỗ trợ, vui lòng liên hệ:
 📞 Điện thoại: 0985762219
 
 © 2025 - Khoa Công nghệ Thông tin - Đại học Đại Nam
+
 
 
 
