@@ -85,44 +85,79 @@ Hiển thị kết quả cho Client.
 
 ## 📝 4. Các bước cài đặt
 
-### Yêu cầu hệ thống:
-- Java Development Kit (JDK) 11 trở lên
-- IDE: Eclipse, IntelliJ IDEA, hoặc VS Code
-- Kết nối internet (để truy cập WeatherAPI)
+⚙️ Yêu cầu hệ thống:
+Hệ điều hành: Windows 10/11, macOS, Linux
 
-### Cài đặt và chạy:
+Java Development Kit (JDK): Phiên bản 8 trở lên
 
-. **Cấu hình API Key** (tùy chọn):
-   - Đăng ký tài khoản tại [WeatherAPI.com](https://www.weatherapi.com/)
-   - Thay thế API key trong `Server.java`:
+Bược 1: Cải đặt chi tiết 
+Cấu hình Eclipse
 
-🔄 Luồng chạy của chương trình
+Import project Java vào IDE.
 
-Khi chạy chương trình WeatherAppUI trong Eclipse:
+Đảm bảo project đang chạy bằng JDK, không phải JRE.
 
-**1 Người dùng nhập thành phố
+Thêm các thư viện cần thiết:
 
-- Người dùng gõ tên thành phố vào ô nhập liệu.
+gson-x.x.x.jar hoặc json-x.x.x.jar (nếu dùng thư viện parse JSON).
 
-- Nhấn nút 🔍 Tìm kiếm.
+Thêm vào: Project → Properties → Java Build Path → Add External JARs.
 
-**2 WeatherAppUI gọi đến Service
+Bước 3: Cấu hình API Key
 
-- Lớp WeatherAppUI sẽ gọi phương thức getWeather(city) của WeatherService.
+Mở file WeatherServiceImpl.java.
 
-- Trong dự án, WeatherService là interface, và lớp WeatherServiceImpl là hiện thực.
+Thay dòng:
 
-**3 WeatherServiceImpl liên lạc qua RMI
+private static final String API_KEY = "YOUR_API_KEY";
 
-- WeatherServiceImpl không trực tiếp trả về dữ liệu, mà sẽ gọi phương thức từ xa (RMI) đến Server để lấy thông tin thời tiết.
 
-- Server sẽ kết nối với API thời tiết (ví dụ OpenWeatherMap) để truy vấn dữ liệu theo thành phố.
+bằng API key thật lấy từ [OpenWeather](https://www.weatherapi.com/login.aspx)
+.
+Bước 4: Chuẩn bị RMI Registry
 
-**4 Server xử lý & trả kết quả về Client
+Bạn có 2 cách để khởi động RMI Registry:
 
-- Server nhận yêu cầu từ Client (qua RMI).
+**Khởi động ngoài terminal/cmd
 
-- Server gọi API, nhận JSON kết quả, rồi xử lý để lấy:
+Vào thư mục bin (chứa file .class) của project.
+
+Chạy lệnh:
+
+rmiregistry 1099
+
+
+(Windows có thể cần: "C:\Program Files\Java\jdk-17\bin\rmiregistry.exe" 1099)
+
+**Tích hợp trong code
+
+Trong WeatherServer.java, thêm:
+
+LocateRegistry.createRegistry(1099);
+
+
+Khi đó chỉ cần chạy WeatherServer, không cần mở rmiregistry bằng tay.
+
+BBước 5: Chạy ứng dụng
+
+** Khởi động Server
+
+Mở file WeatherServer.java.
+
+Run → Java Application.
+
+Console in ra:
+
+✅ WeatherServer is running on port 1099
+
+
+** Khởi động Client (Giao diện Swing)
+
+Mở file WeatherAppUI.java.
+
+Run → Java Application.
+
+Giao diện xuất hiện → nhập thành phố → bấm “Tìm kiếm” → hiển thị kết quả
 
 - Tên thành phố & quốc gia 🌍
 
@@ -171,17 +206,17 @@ DuaBaoThoiTiet/
 
 ```
 
-## ✉️ 5. Liên hệ
+📞 5. Liên hệ
 
-**Tác giả**: Nguyễn Thế Vinh
+Nếu có thắc mắc hoặc cần hỗ trợ, vui lòng liên hệ:
 
-📧 **Email**: vinhvh010204@gmail.com
-🏫 **Trường**: Đại học Đại Nam - Khoa Công nghệ Thông tin  
+📍 Địa chỉ: Hà Đông, Hà Nội
 
+📧 Email: vinhvh010204@gmail.com
 
----
+📞 Điện thoại: 0985762219
 
-
+© 2025 - Khoa Công nghệ Thông tin - Đại học Đại Nam
 
 
 
