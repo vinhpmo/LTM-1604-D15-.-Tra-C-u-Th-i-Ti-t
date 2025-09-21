@@ -86,6 +86,9 @@ Hiển thị kết quả cho Client.
 ## 📝 4. Các bước cài đặt
 
 ⚙️ Yêu cầu hệ thống:
+
+```bash
+
 Hệ điều hành: Windows 10/11, macOS, Linux
 
 Java Development Kit (JDK): Phiên bản 8 trở lên
@@ -103,7 +106,7 @@ gson-x.x.x.jar hoặc json-x.x.x.jar (nếu dùng thư viện parse JSON).
 
 Thêm vào: Project → Properties → Java Build Path → Add External JARs.
 
-Bước 3: Cấu hình API Key
+Bước 2: Cấu hình API Key
 
 Mở file WeatherServiceImpl.java.
 
@@ -114,11 +117,11 @@ private static final String API_KEY = "YOUR_API_KEY";
 
 bằng API key thật lấy từ [OpenWeather](https://www.weatherapi.com/login.aspx)
 .
-Bước 4: Chuẩn bị RMI Registry
+Bước 3: Chuẩn bị RMI Registry
 
 Bạn có 2 cách để khởi động RMI Registry:
 
-**Khởi động ngoài terminal/cmd
+1. Khởi động ngoài terminal/cmd
 
 Vào thư mục bin (chứa file .class) của project.
 
@@ -129,7 +132,7 @@ rmiregistry 1099
 
 (Windows có thể cần: "C:\Program Files\Java\jdk-17\bin\rmiregistry.exe" 1099)
 
-**Tích hợp trong code
+2. Tích hợp trong code
 
 Trong WeatherServer.java, thêm:
 
@@ -138,9 +141,9 @@ LocateRegistry.createRegistry(1099);
 
 Khi đó chỉ cần chạy WeatherServer, không cần mở rmiregistry bằng tay.
 
-BBước 5: Chạy ứng dụng
+Bước 4: Chạy ứng dụng
 
-** Khởi động Server
+1. Khởi động Server
 
 Mở file WeatherServer.java.
 
@@ -151,7 +154,7 @@ Console in ra:
 ✅ WeatherServer is running on port 1099
 
 
-** Khởi động Client (Giao diện Swing)
+2. Khởi động Client (Giao diện Swing)
 
 Mở file WeatherAppUI.java.
 
@@ -217,6 +220,7 @@ Nếu có thắc mắc hoặc cần hỗ trợ, vui lòng liên hệ:
 📞 Điện thoại: 0985762219
 
 © 2025 - Khoa Công nghệ Thông tin - Đại học Đại Nam
+
 
 
 
