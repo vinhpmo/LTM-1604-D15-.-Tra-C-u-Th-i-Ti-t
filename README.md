@@ -187,7 +187,7 @@ Giao diện xuất hiện → nhập thành phố → bấm “Tìm kiếm” �
 📞 5. Liên hệ
 
 Nếu có thắc mắc hoặc cần hỗ trợ, vui lòng liên hệ:
-
+```bash
 📍 Địa chỉ: Hà Đông, Hà Nội
 
 📧 Email: vinhvh010204@gmail.com
@@ -195,6 +195,8 @@ Nếu có thắc mắc hoặc cần hỗ trợ, vui lòng liên hệ:
 📞 Điện thoại: 0985762219
 
 © 2025 - Khoa Công nghệ Thông tin - Đại học Đại Nam
+ ```
+
 
 
 
