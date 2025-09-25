@@ -194,8 +194,9 @@ Nếu có thắc mắc hoặc cần hỗ trợ, vui lòng liên hệ:
 
 📞 Điện thoại: 0985762219
 
-© 2025 - Khoa Công nghệ Thông tin - Đại học Đại Nam
+© 2025 - Khoa Công nghệ Thông tin - Trường Đại học Đại Nam
  ```
+
 
 
 
