@@ -1,393 +1,204 @@
 package weather;
 
-import org.json.JSONArray;
-
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import weather.WeatherClient;
-
+import java.awt.event.ActionEvent;
 
 public class WeatherAppUi extends JFrame {
-    private final JTextField txtCity = new JTextField();
-    private final JButton btnSearch = new JButton("Tra cứu");
-    private final JButton btnMap = new JButton("📍 Bản đồ");
-    private final JButton btnAddFav = new JButton("★ Thêm yêu thích");
-    private final JButton btnFavWindow = new JButton("Yêu thích");
-    private final JComboBox<String> langCombo = new JComboBox<>(new String[]{"vi","en"});
+    private final JTextField txtCity;
+    private final JButton btnSearch, btnFav, btnHist, btnLoc;
+    private final JLabel lblCity, lblTemp, lblCond, lblWind, lblBigIcon;
+    private final JPanel forecastPanel;
+    private final ForecastChartPanel chartPanel;
 
-    private final JLabel lblCity = new JLabel("—");
-    private final JLabel lblTime = new JLabel("—");
-    private final JLabel lblTemp = new JLabel("—");
-    private final JLabel lblDesc = new JLabel("—");
-    private final JLabel lblHumidity = new JLabel("—");
-    private final JLabel lblWind = new JLabel("—");
-    private final JLabel mainIcon = new JLabel();
-
-    private final DefaultListModel<String> historyModel = new DefaultListModel<>();
-    private final JList<String> historyList = new JList<>(historyModel);
-
-    private final DefaultListModel<String> favModel = new DefaultListModel<>();
-    private final JList<String> favList = new JList<>(favModel);
-
-    private final DefaultListModel<String> fiveModel = new DefaultListModel<>();
-    private final JList<String> fiveList = new JList<>(fiveModel);
-
-    private final ForecastChartPanel chartPanel = new ForecastChartPanel();
-
-    private WeatherClient client;
-    private String apiKey = "29061fdbdaa260c4fce8e14b51f29afe"; // <-- THAY API KEY Ở ĐÂY
-    private String lang = "vi";
-
-    private final File configDir;
-    private final File favFile;
-    private final File histFile;
+    private WeatherData lastData;
 
     public WeatherAppUi() {
-        super("Ứng dụng Thời tiết");
-        String home = System.getProperty("user.home");
-        configDir = new File(home, ".weather_app");
-        if (!configDir.exists()) configDir.mkdirs();
-        favFile = new File(configDir, "favorites.json");
-        histFile = new File(configDir, "history.txt");
-
-        // Nếu WeatherClient có constructor nhận apiKey thì gọi, nếu không fallback
-        try {
-            client = new WeatherClient(apiKey);
-        } catch (Throwable t) {
-        	client = new WeatherClient(apiKey);
-
-        }
-
-        initUI();
-        loadFavorites();
-        loadHistory();
-        showWelcome();
-    }
-
-    private void initUI() {
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(1100, 760);
+        setTitle("Tra cứu Thời tiết");
+        setSize(1100, 720);
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout(10,10));
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        // header gradient
-        JPanel header = new JPanel() {
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g;
-                int w = getWidth(), h = getHeight();
-                g2.setPaint(new GradientPaint(0,0, new Color(18,120,200), 0,h, new Color(20,180,220)));
-                g2.fillRect(0,0,w,h);
-            }
-        };
-        header.setPreferredSize(new Dimension(0,100));
-        header.setLayout(new FlowLayout(FlowLayout.LEFT, 16, 30));
-        txtCity.setColumns(26);
-        header.add(new JLabel("Thành phố:"));
-        header.add(txtCity);
-        header.add(btnSearch);
-        header.add(btnMap);
-        header.add(btnAddFav);
-        header.add(btnFavWindow);
-        header.add(new JLabel("Ngôn ngữ:"));
-        header.add(langCombo);
-        add(header, BorderLayout.NORTH);
+        // Top bar
+        JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        txtCity = new JTextField(30);
+        btnSearch = new JButton("Tra cứu");
+        btnFav = new JButton("Yêu thích");
+        btnHist = new JButton("Lịch sử");
+        btnLoc = new JButton("Vị trí");
 
-        // left card current
-        JPanel leftCard = new RoundedPanel();
-        leftCard.setPreferredSize(new Dimension(420,0));
-        leftCard.setLayout(new BorderLayout(8,8));
-        lblTemp.setFont(new Font("SansSerif", Font.BOLD, 56));
-        lblDesc.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        lblCity.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        lblTime.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        mainIcon.setHorizontalAlignment(SwingConstants.CENTER);
-        mainIcon.setPreferredSize(new Dimension(160,160));
+        styleButton(btnSearch);
+        styleButton(btnFav);
+        styleButton(btnHist);
+        styleButton(btnLoc);
 
-        JPanel topInfo = new JPanel(new BorderLayout());
-        topInfo.setOpaque(false);
-        topInfo.add(lblTemp, BorderLayout.WEST);
-        topInfo.add(mainIcon, BorderLayout.EAST);
+        top.setBackground(new Color(230, 240, 255));
+        top.add(new JLabel("Thành phố:"));
+        top.add(txtCity);
+        top.add(btnSearch);
+        top.add(btnFav);
+        top.add(btnHist);
+        top.add(btnLoc);
 
-        JPanel meta = new JPanel(new GridLayout(4,1));
-        meta.setOpaque(false);
-        meta.add(lblCity);
-        meta.add(lblTime);
-        meta.add(lblDesc);
-        meta.add(lblHumidity);
-        topInfo.add(meta, BorderLayout.CENTER);
-        leftCard.add(topInfo, BorderLayout.NORTH);
+        add(top, BorderLayout.NORTH);
 
-        // center: chart + 5-day horizontal panel
-        JPanel center = new JPanel(new BorderLayout(8,8));
-        center.add(chartPanel, BorderLayout.CENTER);
+        // Center
+        JPanel center = new JPanel(new BorderLayout(12, 12));
+        center.setBackground(new Color(245, 250, 255));
 
-        fiveList.setCellRenderer(new FiveDayRenderer());
-        fiveList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-        fiveList.setVisibleRowCount(1);
-        JScrollPane fiveScroll = new JScrollPane(fiveList);
-        fiveScroll.setPreferredSize(new Dimension(0,150));
-        center.add(fiveScroll, BorderLayout.SOUTH);
+        lblBigIcon = new JLabel("", SwingConstants.CENTER);
+        lblBigIcon.setPreferredSize(new Dimension(240, 240));
+        center.add(lblBigIcon, BorderLayout.WEST);
 
-        // right: history + favorites list
-        JPanel right = new RoundedPanel();
-        right.setPreferredSize(new Dimension(260,0));
-        right.setLayout(new BorderLayout(6,6));
-        right.add(new JLabel("Lịch sử", SwingConstants.CENTER), BorderLayout.NORTH);
-        historyList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        right.add(new JScrollPane(historyList), BorderLayout.CENTER);
+        JPanel info = new JPanel(new GridLayout(4, 1, 6, 6));
+        info.setBackground(new Color(245, 250, 255));
 
-        JPanel favPane = new JPanel(new BorderLayout());
-        favPane.add(new JLabel("Yêu thích", SwingConstants.CENTER), BorderLayout.NORTH);
-        favList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        favPane.add(new JScrollPane(favList), BorderLayout.CENTER);
-        right.add(favPane, BorderLayout.SOUTH);
+        lblCity = new JLabel("Chưa tra cứu", SwingConstants.LEFT);
+        lblCity.setFont(lblCity.getFont().deriveFont(Font.BOLD, 22f));
+        lblCity.setForeground(new Color(0, 102, 204));
 
-        add(leftCard, BorderLayout.WEST);
+        lblTemp = new JLabel("", SwingConstants.LEFT);
+        lblTemp.setFont(lblTemp.getFont().deriveFont(18f));
+        lblTemp.setForeground(new Color(220, 50, 50));
+
+        lblCond = new JLabel("", SwingConstants.LEFT);
+        lblCond.setForeground(new Color(60, 60, 60));
+
+        lblWind = new JLabel("", SwingConstants.LEFT);
+        lblWind.setForeground(new Color(60, 60, 60));
+
+        info.add(lblCity);
+        info.add(lblTemp);
+        info.add(lblCond);
+        info.add(lblWind);
+
+        center.add(info, BorderLayout.CENTER);
+
+        forecastPanel = new JPanel(new GridLayout(1, 5, 12, 12));
+        forecastPanel.setPreferredSize(new Dimension(0, 240));
+        forecastPanel.setBackground(new Color(250, 252, 255));
+        center.add(forecastPanel, BorderLayout.SOUTH);
+
         add(center, BorderLayout.CENTER);
-        add(right, BorderLayout.EAST);
 
-        // events
-        btnSearch.addActionListener(e -> startSearch());
-        txtCity.addActionListener(e -> startSearch());
-        btnMap.addActionListener(e -> openMap());
-        btnAddFav.addActionListener(e -> addCurrentToFav());
-        btnFavWindow.addActionListener(e -> openFavoritesWindow());
-        langCombo.addActionListener(e -> {
-            lang = (String) langCombo.getSelectedItem();
-        });
+        chartPanel = new ForecastChartPanel();
+        add(chartPanel, BorderLayout.SOUTH);
 
-        historyList.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    String sel = historyList.getSelectedValue();
-                    if (sel != null) { txtCity.setText(sel); startSearch(); }
-                }
-            }
-        });
-        favList.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    String sel = favList.getSelectedValue();
-                    if (sel != null) { txtCity.setText(sel); startSearch(); }
-                }
-            }
-        });
+        // Events
+        btnSearch.addActionListener(this::onSearch);
+        txtCity.addActionListener(e -> btnSearch.doClick());
+        btnFav.addActionListener(e -> new FavoritesUi(this));
+        btnHist.addActionListener(e -> new HistoryUi(this));
+        btnLoc.addActionListener(e -> openLocation());
 
         setVisible(true);
     }
 
-    private void showWelcome() {
-        lblCity.setText("Ứng dụng Thời tiết");
-        lblTime.setText("");
-        lblTemp.setText("--°C");
-        lblDesc.setText("Nhập thành phố rồi nhấn Tra cứu");
-        mainIcon.setIcon(chartPanel.loadIcon("weather.gif", 140, 140));
-        fiveModel.clear();
-        chartPanel.setForecast(null);
+    private void styleButton(JButton btn) {
+        btn.setBackground(new Color(100, 149, 237));
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        btn.setFont(btn.getFont().deriveFont(Font.BOLD, 13f));
     }
 
-    private void startSearch() {
-        final String city = txtCity.getText().trim();
-        if (city.isEmpty()) { JOptionPane.showMessageDialog(this, "Vui lòng nhập tên thành phố"); return; }
-        btnSearch.setEnabled(false);
-        SwingWorker<WeatherData, Void> wk = new SwingWorker<>() {
-            @Override
-            protected WeatherData doInBackground() {
-                try {
-                    return client.getService().getWeather(city, lang);
-                } catch (Exception ex) { ex.printStackTrace(); return null; }
-            }
-            @Override
-            protected void done() {
-                try {
-                    WeatherData wd = get();
-                    if (wd == null) { JOptionPane.showMessageDialog(WeatherAppUi.this, "Không lấy được dữ liệu"); }
-                    else {
-                        applyWeather(wd);
-                        appendHistory(wd.city);
-                    }
-                } catch (Exception ex) { ex.printStackTrace(); }
-                btnSearch.setEnabled(true);
-            }
-        };
-        wk.execute();
-    }
-
-    private void applyWeather(WeatherData wd) {
-        lblCity.setText("📍 " + wd.city + (wd.country != null && !wd.country.isEmpty() ? ", " + wd.country : ""));
-        lblTime.setText("🕒 " + (wd.localTime == null ? "" : wd.localTime));
-        lblTemp.setText(String.format("%.0f\u00B0C", wd.temp));
-        lblDesc.setText((lang.equals("vi") ? "☁ " : "☁ ") + (wd.description == null ? "" : wd.description));
-        lblHumidity.setText((lang.equals("vi") ? "💧 Độ ẩm: " : "💧 Humidity: ") + wd.humidity + "%");
-        lblWind.setText((lang.equals("vi") ? "💨 Gió: " : "💨 Wind: ") + wd.windSpeed + " m/s");
-        lblDesc.setToolTipText(wd.description);
-
-        ImageIcon mainIc = chartPanel.loadIcon(wd.iconFile, 140, 140);
-        mainIcon.setIcon(mainIc);
-
-        // five days list: create textual elements (renderer will show icon)
-        fiveModel.clear();
-        if (wd.forecast != null) {
-            for (WeatherData.ForecastDay fd : wd.forecast) {
-                // substring last 5 chars (MM-dd) if length allows
-                String datePart = fd.date.length() >= 5 ? fd.date.substring(fd.date.length()-5) : fd.date;
-                fiveModel.addElement(String.format("%s   %d°C–%d°C", datePart, Math.round(fd.minTemp), Math.round(fd.maxTemp)));
-            }
+    private void onSearch(ActionEvent e) {
+        String rawCity = txtCity.getText();
+        if (rawCity == null || rawCity.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập tên thành phố.");
+            return;
         }
-        fiveList.setModel(fiveModel);
-
-        chartPanel.setForecast(wd.forecast);
-    }
-
-    private void openMap() {
-        String city = txtCity.getText().trim();
-        if (city.isEmpty()) { JOptionPane.showMessageDialog(this, "Nhập thành phố để mở bản đồ"); return; }
         try {
-            String q = java.net.URLEncoder.encode(city, "UTF-8");
-            String url = "https://www.google.com/maps/search/?api=1&query=" + q;
-            if (Desktop.isDesktopSupported()) Desktop.getDesktop().browse(new URI(url));
-        } catch (Exception ex) { JOptionPane.showMessageDialog(this, "Không mở được bản đồ: " + ex.getMessage()); }
-    }
+            String city = StringUtils.normalizeCity(rawCity); // chuẩn hóa tên city
 
-    // Favorites persistence
-    private void addCurrentToFav() {
-        String city = txtCity.getText().trim();
-        if (city.isEmpty()) { JOptionPane.showMessageDialog(this, "Nhập thành phố để thêm"); return; }
-        if (!favModel.contains(city)) {
-            favModel.addElement(city);
-            saveFavorites();
-            JOptionPane.showMessageDialog(this, city + " đã thêm vào Yêu thích");
-        } else JOptionPane.showMessageDialog(this, city + " đã có trong Yêu thích");
-    }
-
-    private void openFavoritesWindow() {
-        List<String> favs = new ArrayList<>();
-        for (int i = 0; i < favModel.size(); i++) favs.add(favModel.get(i));
-        // nếu bạn có class FavoritesWindow -> dùng, nếu không, dùng dialog cơ bản
-        JDialog d = new JDialog(this, "Yêu thích", true);
-        DefaultListModel<String> m = new DefaultListModel<>();
-        for (String s : favs) m.addElement(s);
-        JList<String> list = new JList<>(m);
-        JButton use = new JButton("Sử dụng");
-        JButton del = new JButton("Xóa");
-        use.addActionListener(e -> {
-            String sel = list.getSelectedValue();
-            if (sel != null) { txtCity.setText(sel); startSearch(); d.dispose(); }
-        });
-        del.addActionListener(e -> {
-            String sel = list.getSelectedValue();
-            if (sel != null) {
-                m.removeElement(sel);
-                favModel.removeElement(sel);
-                saveFavorites();
+            WeatherService svc = new WeatherServiceImpl();
+            WeatherData data = svc.getWeather(city);
+            if (data == null) {
+                JOptionPane.showMessageDialog(this, "Không lấy được dữ liệu.");
+                return;
             }
-        });
-        JPanel btnp = new JPanel(); btnp.add(use); btnp.add(del);
-        d.getContentPane().add(new JScrollPane(list), BorderLayout.CENTER);
-        d.getContentPane().add(btnp, BorderLayout.SOUTH);
-        d.setSize(300,400);
-        d.setLocationRelativeTo(this);
-        d.setVisible(true);
-        loadFavorites(); // reload after dialog
-    }
+            // Giữ lại city gốc để hiển thị
+            data.city = rawCity.trim();
+            lastData = data;
 
-    private void saveFavorites() {
-        try {
-            JSONArray arr = new JSONArray();
-            for (int i = 0; i < favModel.size(); i++) arr.put(favModel.get(i));
-            try (FileWriter fw = new FileWriter(favFile)) {
-                fw.write(arr.toString(2));
-            }
-        } catch (Exception ex) { ex.printStackTrace(); }
-    }
-
-    private void loadFavorites() {
-        favModel.clear();
-        try {
-            if (!favFile.exists()) return;
-            String s = readAll(favFile);
-            JSONArray arr = new JSONArray(s);
-            for (int i = 0; i < arr.length(); i++) favModel.addElement(arr.getString(i));
-            favList.setModel(favModel);
-        } catch (Exception ex) { ex.printStackTrace(); }
-    }
-
-    // ✅ FIXED: try-with-resources must have braces { ... } — sửa ở đây
-    private void appendHistory(String city) {
-        try {
-            if (city == null || city.isBlank()) return;
-            if (!historyModel.contains(city)) historyModel.add(0, city);
-
-            // dùng try-with-resources đúng cú pháp
-            try (FileWriter fw = new FileWriter(histFile, true)) {
-                fw.write(city + System.lineSeparator());
-            }
-
-        } catch (Exception ex) { ex.printStackTrace(); }
-    }
-
-    private void loadHistory() {
-        historyModel.clear();
-        try {
-            if (!histFile.exists()) return;
-            try (BufferedReader br = new BufferedReader(new FileReader(histFile))) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    line = line.trim();
-                    if (!line.isEmpty() && !historyModel.contains(line)) historyModel.addElement(line);
-                }
-            }
-        } catch (Exception ex) { ex.printStackTrace(); }
-    }
-
-    private String readAll(File f) throws Exception {
-        try (BufferedReader br = new BufferedReader(new FileReader(f))) {
-            StringBuilder sb = new StringBuilder(); String l;
-            while ((l = br.readLine()) != null) { sb.append(l).append("\n"); }
-            return sb.toString();
+            HistoryService.add(data);
+            updateUI(data);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi lấy dữ liệu: " + ex.getMessage());
         }
     }
 
-    // custom renderer for five-day list to draw mini icon + text
-    private class FiveDayRenderer extends JPanel implements ListCellRenderer<String> {
-        private final JLabel icon = new JLabel();
-        private final JLabel text = new JLabel();
+    private void updateUI(WeatherData d) {
+        lblCity.setText(d.city + (d.country != null ? ", " + d.country : ""));
+        lblTemp.setText(String.format("Nhiệt độ: %.1f °C", d.temperature));
+        lblCond.setText("Thời tiết: " + d.condition);
+        lblWind.setText(String.format("Gió: %.1f m/s", d.windSpeed));
 
-        FiveDayRenderer() {
-            setLayout(new BorderLayout(6,6));
-            setOpaque(false);
-            text.setFont(new Font("SansSerif", Font.PLAIN, 13));
-            add(icon, BorderLayout.WEST);
-            add(text, BorderLayout.CENTER);
-        }
+        // Big icon
+        String mapped = WeatherIconMapper.map(d.icon);
+        ImageIcon big = IconLoader.loadIcon(mapped, 220, 220);
+        lblBigIcon.setIcon(big);
 
-        @Override
-        public Component getListCellRendererComponent(JList<? extends String> list, String value, int index,
-                                                      boolean isSelected, boolean cellHasFocus) {
-            text.setText(value);
-            icon.setIcon(null);
-            WeatherData.ForecastDay[] fd = chartPanel.getForecast();
-            if (fd != null && index >= 0 && index < fd.length) {
-                ImageIcon ic = chartPanel.loadIcon(fd[index].iconFile, 36, 36);
-                icon.setIcon(ic);
+        // Forecast 5 ngày
+        forecastPanel.removeAll();
+        if (d.forecast != null && !d.forecast.isEmpty()) {
+            for (WeatherData.ForecastDay fd : d.forecast) {
+                RoundedPanel card = new RoundedPanel();
+                card.setLayout(new BorderLayout());
+                card.setBackground(new Color(240, 248, 255));
+
+                JLabel date = new JLabel(fd.date, SwingConstants.CENTER);
+                date.setForeground(new Color(0, 102, 204));
+
+                String mappedF = WeatherIconMapper.map(fd.icon);
+                ImageIcon ic = IconLoader.loadIcon(mappedF, 64, 64);
+                JLabel il = new JLabel(ic);
+                il.setHorizontalAlignment(SwingConstants.CENTER);
+
+                JLabel temps = new JLabel(String.format("Min %.0f° / Max %.0f°", fd.minTemp, fd.maxTemp), SwingConstants.CENTER);
+                temps.setForeground(new Color(200, 50, 50));
+
+                card.add(date, BorderLayout.NORTH);
+                card.add(il, BorderLayout.CENTER);
+                card.add(temps, BorderLayout.SOUTH);
+                forecastPanel.add(card);
             }
-            if (isSelected) setBackground(new Color(220,235,255));
-            else setBackground(new Color(0,0,0,0));
-            return this;
+        }
+        forecastPanel.revalidate();
+        forecastPanel.repaint();
+
+        // chart
+        chartPanel.setData(d.forecast);
+    }
+
+    private void openLocation() {
+        if (lastData == null) {
+            JOptionPane.showMessageDialog(this, "Chưa có dữ liệu để tra cứu.");
+            return;
+        }
+        try {
+            double lat = lastData.latitude;
+            double lon = lastData.longitude;
+
+            if (lat == 0 && lon == 0) {
+                JOptionPane.showMessageDialog(this, "Không có thông tin tọa độ để mở bản đồ.");
+                return;
+            }
+
+            String url = String.format("https://www.google.com/maps/search/?api=1&query=%f,%f", lat, lon);
+            Desktop.getDesktop().browse(new java.net.URI(url));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Không mở được bản đồ: " + ex.getMessage());
         }
     }
 
-    // main
+    public void searchForCity(String city) {
+        txtCity.setText(city);
+        btnSearch.doClick();
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception ignored) {}
-            new WeatherAppUi();
-        });
+        SwingUtilities.invokeLater(WeatherAppUi::new);
     }
 }

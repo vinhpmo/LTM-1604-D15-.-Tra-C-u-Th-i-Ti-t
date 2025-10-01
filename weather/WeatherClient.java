@@ -1,14 +1,13 @@
 package weather;
 
-/**
- * Wrapper khởi tạo service với API key
- */
 public class WeatherClient {
     private final WeatherService service;
 
-    public WeatherClient(String apiKey) {
-        this.service = new WeatherServiceImpl(apiKey);
+    public WeatherClient(WeatherService service) {
+        this.service = service;
     }
 
-    public WeatherService getService() { return service; }
+    public WeatherData fetch(String city) throws Exception {
+        return service.getWeather(city);
+    }
 }
