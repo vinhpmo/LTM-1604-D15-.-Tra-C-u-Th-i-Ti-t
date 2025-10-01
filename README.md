@@ -71,17 +71,26 @@ Hiển thị kết quả cho Client.
 ## 🚀 3. Một số hình ảnh
 
 ### Giao diện chính của Client
-![Client Interface](docs/trangchu.png)
+![Client Interface](docs/chuatimkiem.png)
 
 ### Kết quả tra cứu thời tiết
 
 ** Tra cứu thành công
 
-![Weather Result](docs/thanhcong.png)
+![Weather Result](docs/tracuthanhcong.png)
 
 ** Lỗi không tra cứu được
 
-![Weather Result](docs/loikhongtimdc.png)
+![Weather Result](docs/loiiiiii.png)
+
+**Lịch sử
+
+![Weather Result](docs/lichsu.png)
+
+** Yêu thích
+
+![Weather Result](docs/giaodienyeutich.png)
+
 
 ## 📝 4. Các bước cài đặt
 
@@ -196,6 +205,7 @@ Nếu có thắc mắc hoặc cần hỗ trợ, vui lòng liên hệ:
 
 © 2025 - Khoa Công nghệ Thông tin - Trường Đại học Đại Nam
  ```
+
 
 
 
