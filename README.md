@@ -5,7 +5,7 @@
 </h2>
 
 <h2 align="center">
-    Ứng dụng tra cứu thời tiết online
+    ỨNG DỤNG TRA CỨU THỜI TIẾT ONLINE 
 </h2>
 
 <div align="center">
@@ -193,7 +193,7 @@ Giao diện xuất hiện → nhập thành phố → bấm “Tìm kiếm” �
 - Hiển thị icon phù hợp (mưa, nắng, mây, đêm, tuyết...).
  ```
 
-📞 5. Liên hệ
+## 📞 5. Liên hệ
 
 Nếu có thắc mắc hoặc cần hỗ trợ, vui lòng liên hệ:
 ```bash
@@ -201,10 +201,11 @@ Nếu có thắc mắc hoặc cần hỗ trợ, vui lòng liên hệ:
 
 📧 Email: vinhvh010204@gmail.com
 
-📞 Điện thoại: 0985762219
+📞 Điện thoại: 098567****
 
-© 2025 - Khoa Công nghệ Thông tin - Trường Đại học Đại Nam
+© 2025 - Khoa Công nghệ thông tin - Trường Đại học Đại Nam
  ```
+
 
 
 
